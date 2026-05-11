@@ -25,3 +25,10 @@ $routes->get('logout','AuthController::logout');
 
 $routes->get('google-login','AuthController::googleLogin');
 $routes->get('google-callback','AuthController::googleCallback');
+
+$routes->post('send-otp','AuthController::sendOtp');
+$routes->post('verify-otp','AuthController::verifyOtp');
+
+
+$routes->get('get-profile','UserController::getProfile');
+$routes->post('update-profile','UserController::updateProfile');

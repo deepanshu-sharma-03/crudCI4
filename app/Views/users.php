@@ -246,11 +246,6 @@ function saveUser(){
         valid = false;
     }
 
-    if (!email.value.includes("@gmail.com")) {
-        setError(email, "Valid Gmail required");
-        valid = false;
-    }
-
     if(mobile_number.value.length < 10 || mobile_number.value.length > 10){
         setError(mobile_number,"Number have 10 digits");
         valid = false;

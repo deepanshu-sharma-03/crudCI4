@@ -97,11 +97,6 @@
         "Enter email";
         isValid = false;
 
-    }else if(!email.value.includes("@gmail.com")){
-        email.classList.add("error");
-        document.getElementById("emailError").innerText =
-        "Enter valid gmail";
-        isValid = false;
     }
     // Mobile_No
     if(mobile_number.value.trim().length > 10 || mobile_number.value.trim().length < 10){

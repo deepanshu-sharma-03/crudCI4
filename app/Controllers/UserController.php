@@ -118,5 +118,39 @@ public function delete($id = null)
         'message'=>'user deleted successfully'
     ]);
 }
+
+// get Profile
+public function getProfile(){
+    $model = new UserModel();
+    $id = session()->get('id');
+    $user = $model->find($id);
+    return $this->response->setJSON($user);
 }
+
+// Update Profile
+public function updateProfile(){
+$model = new UserModel();
+$id  = session()->get('id');
+$data = [
+    'name'=> $this->request->getPost('name'),
+    'email' => $this->request->getPost('email'),
+    'password'=>$this->request->getPost('password'),
+    'mobile_number' => $this->request->getPost('mobile_number')
+];
+$model->update($id,$data);
+$updateduser = $model->find($id);
+session()->set([
+    'name'=>$updateduser['name'],
+    'email'=>$updateduser['email'],
+    'password'=>$updateduser['password'],
+    'mobile_number'=>$updateduser['mobile_number']
+]);
+
+return $this->response->setJSON([
+    'status'=>'success',
+    'message'=>'profile updated succcessfully'
+]);
+}
+}
+
 ?>
