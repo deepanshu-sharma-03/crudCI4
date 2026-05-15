@@ -42,11 +42,6 @@
 
     <div class="card p-4 shadow mx-auto" style="max-width:400px;">
         <h3 class="text-center mb-4">Login</h3>
-        <?php if(session()->getFlashdata('error')){ ?>
-            <div class="alert alert-danger">
-                <?= session()->getFlashdata('error') ?>
-            </div>
-        <?php } ?>
 
         <!-- <form method="post" autocomplete="off" action="<?= base_url('loginUser') ?>"> -->
             <div>
@@ -55,12 +50,14 @@
                    id="email"
                    class="form-control mb-3"
                    placeholder="Email"
+                   oninput="clearMessage()"
                    required >
             <input type="password"
                    name="password"
                    id="password"
                    class="form-control mb-3"
                    placeholder="Password"
+                   oninput="clearMessage()"
                    required>
             <button 
     type="button"
@@ -134,32 +131,90 @@
         }
     });
 }
+function clearMessage(){
+
+    // CLEAR MESSAGE TEXT
+    document.getElementById("message").innerHTML = "";
+
+    // OPTIONAL:
+    // HIDE OTP BOX AGAIN
+
+    document.getElementById("otpBox").style.display = "none";
+}
 
 // Verify OTP
 function verifyOtp(){
+
+    // get otp input value
     let otp = document.getElementById("otp").value;
+
+    // api call
     fetch(base + "verify-otp", {
+
+        // request method
         method:"POST",
+
+        // request headers
         headers:{
-            "Content-Type":"application/x-www-form-urlencoded"
+            "Content-Type":
+            "application/x-www-form-urlencoded"
         },
+
+        // send otp to backend
         body:new URLSearchParams({
+
             otp:otp
         })
     })
+
+    // convert response into json
     .then(res => res.json())
+
+    // handle response
     .then(data => {
-        let msg = document.getElementById("message");
+
+        // message element
+        let msg = document.getElementById(
+            "message"
+        );
+
+        // OTP VERIFIED
         if(data.status){
-            msg.innerHTML = "OTP Verified Successfully";
+
+            
+         
+            // success message
+            msg.innerHTML =
+            "OTP Verified Successfully";
+
             msg.style.color = "green";
+
+            // redirect after 1 second
             setTimeout(() => {
-                window.location.href = data.redirect;
+
+                // REDIRECT
+            window.location.href =
+                data.redirect;
+
+
             },1000);
-        }else{
-            msg.innerHTML = data.message;
+
+        }
+
+        // OTP FAILED
+        else{
+
+            msg.innerHTML =
+            data.message;
+
             msg.style.color = "red";
         }
+    })
+
+    // error handling
+    .catch(error => {
+
+        console.log(error);
     });
 }
 </script>
