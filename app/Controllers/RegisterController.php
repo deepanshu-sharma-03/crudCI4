@@ -4,29 +4,24 @@ namespace App\Controllers;
 
 use CodeIgniter\Controller;
 
-use App\Services\UserService;
+use App\Services\UserServices;
 
 class RegisterController extends Controller
 {
-    protected $userService;
+    protected $userServices;
 
     public function __construct()
     {
-        $this->userService =
-            new UserService();
+        $this->userServices = new UserServices();
     }
 
     public function register()
     {
-        // echo "heelo inside php";
         return view('register');
     }
 
     public function registerUser()
     {
-        return $this->userService
-            ->register(
-                $this->request
-            );
+        return $this->userServices->registerUser($this->request);
     }
 }

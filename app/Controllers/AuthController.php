@@ -2,18 +2,16 @@
 
 namespace App\Controllers;
 
-use App\Services\UserService;
+use App\Services\UserServices;
 use CodeIgniter\Controller;
 
 class AuthController extends Controller
 {
-
-        protected $userService;
-
-        public function __construct()
-        {
-            $this->userService =  new UserService();
-        }
+    protected $userServices;
+    public function __construct()
+    {
+        $this->userServices =  new UserServices();
+    }
 
     public function login()
     {
@@ -21,13 +19,8 @@ class AuthController extends Controller
     }
 
     public function logout()
-{
-    session()->destroy();
-
-    return redirect()
-
-        ->to(base_url('login'))
-
-        ->deleteCookie('token');
-}
+    {
+        session()->destroy();
+        return redirect()->to(base_url('login'))->deleteCookie('token');
+    }
 }

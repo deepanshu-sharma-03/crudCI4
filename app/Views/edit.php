@@ -74,6 +74,7 @@
                 </div>
 
 
+
                 <!-- PRODUCT PRICE -->
                 <div class="mb-3">
 
@@ -82,13 +83,27 @@
                     </label>
 
                     <input
-                        type="number"
+                        type="text"
                         name="price"
                         value="<?= $product['price'] ?>"
                         class="form-control"
                         placeholder="Enter Product Price"
                         required>
+                </div>
+                <!-- PRODUCT Quantity -->
+                <div class="mb-3">
 
+                    <label class="form-label">
+                        Product Quantity
+                    </label>
+
+                    <input
+                        type="number"
+                        name="quantity"
+                        value="<?= $product['product_qty'] ?>"
+                        class="form-control"
+                        placeholder="Enter Product Quantity"
+                        required>
                 </div>
 
 

@@ -94,6 +94,17 @@
         .product-switch input:checked+.product-slider::before {
             transform: translateX(27px);
         }
+
+        .top-buttons {
+            display: flex;
+            justify-content: flex-start;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .small-icon {
+            margin-right: 6px;
+        }
     </style>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
@@ -107,10 +118,15 @@
             <div class="d-flex justify-content-between align-items-center mb-4">
 
                 <h2 class="heading">All Products</h2>
-
-                <a href="/add-product" class="btn btn-primary">
-                    + Add Product
-                </a>
+                <div class="top-buttons">
+                    <a href="/add-product" class="btn btn-primary">
+                        + Add Product
+                    </a>
+                    <button class="cart-back-btn btn btn-primary" onclick=backward()>
+                        <i class="fa-solid fa-arrow-left small-icon"></i>
+                        Back
+                    </button>
+                </div>
 
             </div>
 
@@ -123,6 +139,7 @@
                         <th>Name</th>
                         <th>Price</th>
                         <th>Status</th>
+                        <th>Quantity</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -162,11 +179,14 @@
                                         data-id="<?= $product['id'] ?>"
                                         data-status="<?= $product['status'] ?>"
                                         <?= ($product['status'] == 'active') ? 'checked' : '' ?>>
-
                                     <span class="product-slider"></span>
-
                                 </label>
 
+                            </td>
+                            <td>
+                                <span class="badge bg-primary fs-6 px-3 py-2 rounded-pill">
+                                    <?= $product['product_qty'] ?>
+                                </span>
                             </td>
                             <td>
 
@@ -235,6 +255,10 @@
             });
 
         });
+
+        function backward() {
+            window.location.href = "<?= base_url('/admin') ?>";
+        }
     </script>
 
 </body>

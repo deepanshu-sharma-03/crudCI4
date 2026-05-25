@@ -4,12 +4,10 @@ namespace App\Services;
 
 use App\Models\UserModel;
 
-class UserService
+class LoginService
 {
     protected $userModel;
-
     protected $otpService;
-
     protected $jwtService;
 
     public function __construct()
@@ -18,7 +16,6 @@ class UserService
         $this->otpService =  new OtpService();
         $this->jwtService =  new JwtService();
     }
-
     // REGISTER USER
     public function register($request)
     {
@@ -126,8 +123,6 @@ class UserService
         // GENERATE JWT
         $token = $this->jwtService->generateToken($user);
 
-
-
         // CLEAR SESSION
         session()->remove([
             'otp',
@@ -147,11 +142,8 @@ class UserService
         );
 
         return $response->setJSON([
-
             'status'   => true,
-
             'redirect' => $redirect,
-
             'user'     => $user
         ]);
     }

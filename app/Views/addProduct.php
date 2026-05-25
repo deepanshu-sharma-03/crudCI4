@@ -35,7 +35,16 @@
         }
 
         .btn-submit {
-            width: 100%;
+            width: 40%;
+            padding: .5rem;
+        }
+
+        .button-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 15px;
         }
     </style>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -81,7 +90,7 @@
                     </label>
 
                     <input
-                        type="number"
+                        type="text"
                         name="price"
                         class="form-control"
                         placeholder="Enter Product Price"
@@ -89,6 +98,21 @@
 
                 </div>
 
+                <!-- PRODUCT QUANTITY    -->
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Product Quantity
+                    </label>
+
+                    <input
+                        type="number"
+                        name="quantity"
+                        class="form-control"
+                        placeholder="Enter Product Price"
+                        required>
+
+                </div>
 
                 <!-- PRODUCT IMAGE -->
                 <div class="mb-4">
@@ -108,11 +132,22 @@
 
 
                 <!-- SUBMIT BUTTON -->
-                <button
-                    type="submit"
-                    class="btn btn-primary btn-submit">
-                    Upload Product
-                </button>
+                <div class="button-group">
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary btn-submit ">
+                        Upload Product
+                    </button>
+
+                    <button
+                        type="button"
+                        onclick="backward()"
+                        class="btn btn-success">
+                        Cancel
+                    </button>
+
+                </div>
 
             </form>
 
@@ -167,6 +202,10 @@
             });
 
         });
+
+        function backward() {
+            window.history.back();
+        }
     </script>
 
 </body>

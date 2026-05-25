@@ -1,7 +1,10 @@
 <?php
 
 namespace App\Services;
+
 use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+
 class JwtService
 {
     public static function generateToken($user)

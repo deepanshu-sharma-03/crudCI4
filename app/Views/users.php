@@ -8,124 +8,286 @@
 
     <style>
         body {
-            background: #eef5ff;
+            margin: 0;
+            background: #f4f6fb;
+            font-family: Arial, sans-serif;
         }
 
-        .table th {
-            background: #0d6efd;
+        /* SIDEBAR */
+
+        .sidebar {
+            width: 260px;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: #111827;
+            color: white;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .profile-box {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .profile-box img {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: 3px solid #fff;
+        }
+
+        .profile-box h5 {
+            margin-top: 12px;
+        }
+
+        .menu a {
+            display: block;
+            text-decoration: none;
+            color: #d1d5db;
+            padding: 14px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+        }
+
+        .menu a:hover {
+            background: #2563eb;
             color: white;
         }
 
-        .error {
-            border: 1px solid red !important;
+        .logout-btn {
+            margin-top: auto;
         }
 
-        .error-text {
-            color: red;
-            font-size: 12px;
-            margin-top: -5px;
-            margin-bottom: 8px;
+        /* CONTENT */
+
+        .main {
+            margin-left: 280px;
+            padding: 30px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .searchbar {
+            width: 350px;
+        }
+
+        .card-box {
+            border: none;
+            border-radius: 18px;
+            overflow: hidden;
+        }
+
+        .table th {
+            background: #2563eb;
+            color: white;
         }
 
         .page-btn {
             padding: 8px 14px;
-            margin: 3px;
             border: none;
-            background: #e2e6ea;
-            cursor: pointer;
-            border-radius: 5px;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-
-        .button {
-            display: inline !important;
-            width: fit-content !important;
-        }
-
-        .page-btn:hover {
-            background: #0d6efd;
-            color: white;
+            border-radius: 8px;
         }
 
         .active-page {
-            background: #0d6efd;
+            background: #2563eb;
             color: white;
-        }
-
-        .searchbar {
-            width: 40%;
-            border: 1px solid black;
         }
     </style>
 </head>
 
 <body>
     <!-- TABLE SECTION -->
-    <div id="tableBox" class="card p-4 shadow">
-        <div style="display:flex; justify-content:space-between; align-items:center; padding:20px;">
-            <h3 class="text-primary m-0">
-                User List
-            </h3>
-            <button
-                onclick="loadProducts()"
-                class="btn btn-primary">
 
-                AllProducts
-            </button>
+    <body>
+
+        <!-- SIDEBAR -->
+
+        <div class="sidebar">
+
+            <div class="profile-box">
+
+                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+
+                <h5>Admin Panel</h5>
+
+            </div>
+
+            <div class="menu">
+
+                <a href="#">🏠 Dashboard</a>
+
+                <a href="#" onclick="loadProducts()">
+                    🛒 Products
+                </a>
+
+                <a href="#" onclick="openForm()">
+                    ➕ Add User
+                </a>
+
+                <a href="#">
+                    👥 Users
+                </a>
+
+            </div>
+
             <button
                 onclick="logoutUser()"
-                class="btn btn-danger">
+                class="btn btn-danger logout-btn">
 
                 Logout
+
             </button>
+
         </div>
-        <input type="text" id="search" class="form-control searchbar mb-3" placeholder="Search users...">
 
-        <button class="button btn btn-primary mb-3 " onclick="openForm()">+ Add User</button>
-        <div id="msg" class="text-danger"></div>
-        <table class="table table-bordered text-center">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Mobile_No.</th>
-                    <th>Password</th>
-                    <th>Role</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody id="userTable"></tbody>
-        </table>
-        <center>
-            <div id="pagination" class="mt-3"></div>
-        </center>
-    </div>
-    <!-- FORM SECTION -->
-    <div id="formBox" class="card p-4 shadow" style="display:none;">
-        <h3 id="formTitle">Add User</h3>
-        <input type="hidden" id="id">
-        <input type="text" autocomplete="off" id="name" class="form-control mb-1" placeholder="Name">
-        <div id="nameError" class="error-text"></div>
 
-        <input type="email" id="email" autocomplete="off" class="form-control mb-1" placeholder="Email">
-        <div id="emailError" class="error-text"></div>
+        <!-- MAIN CONTENT -->
 
-        <input type="number" id="mobile_number" autocomplete="off" class="form-control mb-1" placeholder="Mobile Number">
-        <div id="mobile_numberError" class="error-text"></div>
+        <div class="main">
 
-        <input type="password" autocomplete="off" id="password" class="form-control mb-1" placeholder="Password">
-        <div id="passwordError" class="error-text"></div>
+            <div class="topbar">
 
-        <input type="text" id="role" autocomplete="off" class="form-control mb-1" placeholder="Role">
-        <div id="roleError" class="error-text"></div>
+                <h2 class="text-primary">
+                    Admin Panel
+                </h2>
 
-        <div id="roleError"></div>
-        <button class="btn btn-success" onclick="saveUser()">Save</button>
-        <button class="btn btn-secondary" onclick="closeForm()">Cancel</button>
-    </div>
-    </div>
+                <input
+                    type="text"
+                    id="search"
+                    class="form-control searchbar"
+                    placeholder="Search users...">
+
+            </div>
+
+
+            <!-- USER TABLE -->
+
+            <div
+                id="tableBox"
+                class="card shadow card-box">
+
+                <div class="card-body">
+                    <table class="table table-bordered text-center">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Mobile</th>
+                                <th>Password</th>
+                                <th>Role</th>
+                                <th>Action</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="userTable">
+
+                        </tbody>
+
+                    </table>
+
+                    <center>
+
+                        <div id="pagination">
+
+                        </div>
+
+                    </center>
+
+                </div>
+
+            </div>
+
+            <!-- FORM -->
+
+            <div
+                id="formBox"
+                class="card shadow p-4 mt-4"
+                style="display:none;">
+
+                <h3 id="formTitle">
+
+                    Add User
+
+                </h3>
+
+                <input type="hidden" id="id">
+
+                <input
+                    type="text"
+                    id="name"
+                    class="form-control mb-2"
+                    placeholder="Name">
+
+                <div id="nameError" class="text-danger"></div>
+
+                <input
+                    type="email"
+                    id="email"
+                    class="form-control mb-2"
+                    placeholder="Email">
+
+                <div id="emailError" class="text-danger"></div>
+
+                <input
+                    type="number"
+                    id="mobile_number"
+                    class="form-control mb-2"
+                    placeholder="Mobile">
+
+                <div id="mobile_numberError" class="text-danger"></div>
+
+                <input
+                    type="password"
+                    id="password"
+                    class="form-control mb-2"
+                    placeholder="Password">
+
+                <div id="passwordError" class="text-danger"></div>
+
+                <input
+                    type="text"
+                    id="role"
+                    class="form-control mb-2"
+                    placeholder="Role">
+
+                <div id="roleError" class="text-danger"></div>
+
+                <button
+                    class="btn btn-success"
+                    onclick="saveUser()">
+
+                    Save
+
+                </button>
+
+                <button
+                    class="btn btn-secondary"
+                    onclick="closeForm()">
+
+                    Cancel
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </body>
     <script>
         let base = "<?= base_url() ?>";
         // Helpers
@@ -151,14 +313,13 @@
 
         function loadUsers(page = 1) {
             let search = $("search").value;
-
-
             fetch(base + "get-users/" + page + "?search=" + search, {
                     credentials: "include"
                 })
 
                 .then(res => res.json())
                 .then(data => {
+
                     let rows = "";
                     if (!data.status) {
 
@@ -168,10 +329,12 @@
                     }
                     // if users exist
                     if (data.users.length > 0) {
-                        data.users.forEach(u => {
+
+                        data.users.forEach((u, ind) => {
+                            let serialNo = ((page - 1) * 7) + ind + 1;
                             rows += `
                     <tr>
-                        <td>${u.id}</td>
+                        <td>${serialNo}</td>
                         <td>${u.name}</td>
                         <td>${u.email}</td>
                         <td>${u.mobile_number}</td>
@@ -295,7 +458,7 @@
 
             if (!valid) return;
 
-            let url = id ? "update/" + id : "store";
+            let url = id ? "update/" + id : "add-user";
 
             fetch(base + url, {
                     method: "POST",

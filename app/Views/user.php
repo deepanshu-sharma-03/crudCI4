@@ -6,114 +6,233 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
         body {
-            background: #eef5ff;
+            margin: 0;
+            background: #f4f7fc;
+            font-family: Arial, sans-serif;
         }
 
-        .dashboard-card {
-            max-width: 500px;
-            margin: auto;
-            margin-top: 80px;
+        .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .menu-item {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            padding: 12px 18px;
+            border: none;
             border-radius: 10px;
+
+            background: transparent;
+            color: #fff;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
-        .profile-title {
-            color: #0d6efd;
+        .menu-item:hover {
+            background: #374151;
+            transform: translateX(5px);
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            width: 260px;
+            height: 100vh;
+            background: #1f2937;
+            color: white;
+            position: fixed;
+            left: 0;
+            top: 0;
+            display: flex;
+            flex-direction: column;
+            padding: 25px;
+        }
+
+        .profile-section {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .profile-img {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: 3px solid #fff;
+            object-fit: cover;
+        }
+
+        .profile-name {
+            margin-top: 10px;
+            font-size: 20px;
             font-weight: bold;
         }
 
-        .edit-form {
-            width: 60% !important;
-            /* margin-top: 2rem !important; */
-            padding: 1rem;
-            margin: 0 auto;
+        .menu a {
+            display: block;
+            color: #d1d5db;
+            text-decoration: none;
+            padding: 14px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            transition: .3s;
         }
 
-        .top-bar {
-            display: flex;
-            justify-content: flex-end;
-            padding: 20px;
+        .menu a:hover {
+            background: #374151;
+            color: white;
+        }
+
+        .logout-box {
+            margin-top: auto;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            padding: 40px;
+        }
+
+        .card-box {
+            border: none;
+            border-radius: 20px;
+            padding: 30px;
+        }
+
+        .table td {
+            padding: 16px !important;
         }
     </style>
 </head>
 
 <body>
-    <div style="position: fixed !important; top: 10px !important; left: 10px !important;">
 
-        <button
-            onclick="logoutUser()"
-            class="btn btn-danger">
+    <div class="sidebar">
 
-            Logout
-        </button>
+        <div class="profile-section">
+
+            <img
+                src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+                class="profile-img">
+
+            <div class="profile-name" id="user_name">
+                User
+            </div>
+
+        </div>
+
+        <div class="menu">
+
+            <a href="#" class="menu-item">🏠 Dashboard</a>
+
+            <a href="user/view-products" class="menu-item">
+                🛍 Products
+            </a>
+
+            <button id="ordersBtn" class="menu-item">
+                🛒 Orders
+            </button>
+
+            <a href="#" onclick="openEditForm()" class="menu-item">
+                ✏ Edit Profile
+            </a>
+
+        </div>
+
+        <div class="logout-box">
+
+            <button
+                onclick="logoutUser()"
+                class="btn btn-danger w-100">
+
+                Logout
+
+            </button>
+
+        </div>
+
     </div>
 
-    <!-- USER CARD -->
-    <div class="card shadow p-4 dashboard-card" id="dashboard">
-        <h3 class="text-center profile-title mb-4">
-            Welcome <span id="user_name"></span>
-        </h3>
-        <table class="table table-bordered">
-            <tr>
-                <th>ID</th>
-                <td id="user_id"></td>
-            </tr>
+    <div class="main-content">
 
-            <tr>
-                <th>Email</th>
-                <td id="user_email"></td>
-            </tr>
+        <div class="card shadow card-box" id="dashboard">
 
-            <tr>
-                <th>Mobile No.</th>
-                <td id="user_mobile_number"></td>
-            </tr>
-            <tr>
-                <td>
-                    <a href="user/view-products">View Products</a>
-                </td>
-            </tr>
-        </table>
-        <button class="btn btn-warning" onclick="openEditForm()">
-            Edit Profile
-        </button>
-    </div>
-    <div id="editBox" style="display:none;" class="mt-4 card shadow p-4 edit-form">
-        <h2>Edit Form</h2>
-        <input
-            type="text"
-            id="edit_name"
-            class="form-control mb-2"
-            placeholder="Name">
+            <h2 class="mb-4">
+                My Profile
+            </h2>
 
-        <input
-            type="email"
-            id="edit_email"
-            class="form-control mb-2"
-            placeholder="Email">
+            <table class="table table-bordered">
 
-        <input
-            type="text"
-            id="edit_mobile"
-            class="form-control mb-2"
-            placeholder="Mobile Number">
-        <input
-            type="password"
-            id="edit_password"
-            class="form-control mb-2"
-            placeholder="Password">
+                <tr>
+                    <th>User ID</th>
+                    <td id="user_id"></td>
+                </tr>
 
-        <button
-            class="btn btn-success"
-            onclick="updateProfile()">
-            Save
-        </button>
-        <button
-            class="btn btn-secondary"
-            onclick="closeEditForm()">
-            Cancel
-        </button>
+                <tr>
+                    <th>Email</th>
+                    <td id="user_email"></td>
+                </tr>
+
+                <tr>
+                    <th>Mobile</th>
+                    <td id="user_mobile_number"></td>
+                </tr>
+
+            </table>
+
+        </div>
+
+        <div
+            id="editBox"
+            style="display:none;"
+            class="card shadow p-4 mt-4">
+
+            <h3>Edit Profile</h3>
+
+            <input
+                type="text"
+                id="edit_name"
+                class="form-control mb-3"
+                placeholder="Name">
+
+            <input
+                type="email"
+                id="edit_email"
+                class="form-control mb-3"
+                placeholder="Email">
+
+            <input
+                type="text"
+                id="edit_mobile"
+                class="form-control mb-3"
+                placeholder="Mobile">
+
+            <input
+                type="password"
+                id="edit_password"
+                class="form-control mb-3"
+                placeholder="Password">
+
+            <button
+                class="btn btn-success"
+                onclick="updateProfile()">
+
+                Save
+
+            </button>
+
+        </div>
 
     </div>
     <script>
@@ -122,61 +241,29 @@
         loadProfile();
 
         function loadProfile() {
-
             fetch(
-                    base + "get-profile", {
+                    base + "get-user-profile", {
                         credentials: "include"
                     }
                 )
-
                 .then(res => res.json())
-
                 .then(user => {
-                    console.log(user);
-                    document.getElementById(
-                        "user_id"
-                    ).innerHTML = user.id;
-
-                    document.getElementById(
-                        "user_name"
-                    ).innerHTML = user.name;
-
-                    document.getElementById(
-                        "user_email"
-                    ).innerHTML = user.email;
-
-                    document.getElementById(
-                            "user_mobile_number"
-                        ).innerHTML =
-                        user.mobile_number;
+                    document.getElementById("user_id").innerHTML = user.id;
+                    document.getElementById("user_name").innerHTML = user.name;
+                    document.getElementById("user_email").innerHTML = user.email;
+                    document.getElementById("user_mobile_number").innerHTML = user.mobile_number;
 
                     // EDIT FORM
-                    document.getElementById(
-                        "edit_name"
-                    ).value = user.name;
-
-                    document.getElementById(
-                        "edit_email"
-                    ).value = user.email;
-
-                    document.getElementById(
-                            "edit_mobile"
-                        ).value =
-                        user.mobile_number;
-
-                    // NEVER SHOW HASHED PASSWORD
-                    document.getElementById(
-                        "edit_password"
-                    ).value = "";
+                    document.getElementById("edit_name").value = user.name;
+                    document.getElementById("edit_email").value = user.email;
+                    document.getElementById("edit_mobile").value = user.mobile_number;
+                    document.getElementById("edit_password").value = "";
                 });
-            // edit form 
-
         }
 
         function openEditForm() {
             document.getElementById("dashboard").style.display = "none";
             document.getElementById("editBox").style.display = "block";
-            // loadProfile()
         }
 
         function updateProfile() {
@@ -185,9 +272,8 @@
             let email = document.getElementById("edit_email").value;
             let mobile = document.getElementById("edit_mobile").value;
             let password = document.getElementById("edit_password").value;
-
-            fetch("<?= base_url('update-profile') ?>", {
-
+            console.log(id);
+            fetch("<?= base_url('update-user-profile') ?>", {
                     method: "POST",
                     credentials: "include",
                     headers: {
@@ -206,11 +292,9 @@
                     alert(data.message);
                     location.reload();
                 });
-            // setTimeout(()=>closeEditForm(),1000);
         }
 
         function logoutUser() {
-
             window.location.href =
                 base + "logout";
         }
@@ -219,6 +303,18 @@
             document.getElementById('editBox').style.display = "none";
             document.getElementById('dashboard').style.display = "block";
         }
+        document.getElementById("ordersBtn").addEventListener("click", function() {
+            $.ajax({
+                url: "/orders",
+                type: "GET",
+                success: function(response) {
+                    window.location.href = "/orders";
+                },
+                error: function() {
+                    alert("Failed to load orders");
+                }
+            })
+        })
     </script>
 </body>
 

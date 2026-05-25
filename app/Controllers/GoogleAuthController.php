@@ -5,7 +5,6 @@ namespace App\Controllers;
 use CodeIgniter\Controller;
 use App\Models\UserModel;
 use Google\Client;
-use Firebase\JWT\JWT;
 use App\Services\JwtService;
 
 class GoogleAuthController extends Controller
@@ -26,43 +25,24 @@ class GoogleAuthController extends Controller
     public function googleCallback()
     {
         $client = new \Google\Client();
-
-        $client->setClientId(
-            env('GOOGLE_CLIENT_ID')
-        );
-
-        $client->setClientSecret(
-            env('GOOGLE_CLIENT_SECRET')
-        );
-
-        $client->setRedirectUri(
-            env('GOOGLE_REDIRECT_URI')
-        );
+        $client->setClientId(env('GOOGLE_CLIENT_ID'));
+        $client->setClientSecret(env('GOOGLE_CLIENT_SECRET'));
+        $client->setRedirectUri(env('GOOGLE_REDIRECT_URI'));
 
         // GET GOOGLE CODE
-        $code =
-            $this->request->getGet('code');
+        $code = $this->request->getGet('code');
 
         // CODE MISSING
         if (!$code) {
-
-            return redirect()->to(
-                base_url('login')
-            );
+            return redirect()->to(base_url('login'));
         }
 
         // FETCH ACCESS TOKEN
-        $token =
-            $client->fetchAccessTokenWithAuthCode(
-                $code
-            );
+        $token = $client->fetchAccessTokenWithAuthCode($code);
 
         // TOKEN ERROR
         if (isset($token['error'])) {
-
-            return redirect()->to(
-                base_url('login')
-            );
+            return redirect()->to(base_url('login'));
         }
 
         // SET ACCESS TOKEN
@@ -71,57 +51,34 @@ class GoogleAuthController extends Controller
         );
 
         // GOOGLE USER SERVICE
-        $googleService =
-            new \Google\Service\Oauth2(
-                $client
-            );
+        $googleService = new \Google\Service\Oauth2($client);
 
         // GET USER INFO
-        $googleUser =
-            $googleService
-            ->userinfo
-            ->get();
+        $googleUser = $googleService->userinfo->get();
 
-        $email =
-            (string)$googleUser->email;
-
-        $name =
-            (string)$googleUser->name;
+        $email = (string)$googleUser->email;
+        $name = (string)$googleUser->name;
 
         // USER MODEL
-        $model =
-            new UserModel();
+        $model = new UserModel();
 
         // CHECK USER
-        $user =
-            $model
-            ->where('email', $email)
-            ->first();
+        $user = $model->where('email', $email)->first();
 
         // INSERT NEW USER
         if (!$user) {
-
             $insertData = [
-
                 'name' => $name,
-
                 'email' => $email,
-
                 'mobile_number' => 'google',
-
                 // HASH PASSWORD
                 'password' => password_hash(
                     'google',
                     PASSWORD_DEFAULT
                 ),
-
                 'role' => 'user'
             ];
-
-            $insertId =
-                $model->insert(
-                    $insertData
-                );
+            $insertId = $model->insert($insertData);
 
             // email services
             $emailService = \config\Services::email();
@@ -133,38 +90,23 @@ class GoogleAuthController extends Controller
             $emailService->setSubject('Registration Successful');
             $emailService->setMessage($message);
             $emailService->send();
-            $user =
-                $model->find(
-                    $insertId
-                );
+            $user = $model->find($insertId);
         }
 
         // GENERATE JWT
-        $jwtToken =
-            JwtService::generateToken(
-                $user
-            );
+        $jwtToken = JwtService::generateToken($user);
 
         // REDIRECT URL
-        $redirect =
-            $user['role'] == 'admin'
-            ? base_url('admin')
-            : base_url('user');
+        $redirect = $user['role'] == 'admin' ? base_url('admin') : base_url('user');
 
         // RESPONSE
-
-        $response =
-            redirect()->to(
-                $redirect
-            );
+        $response = redirect()->to($redirect);
 
         $response->setCookie(
             'token',
             $jwtToken,
             3600
         );
-
-        return $response;
         return $response;
     }
 }

@@ -23,11 +23,13 @@ class ProductServices
             }
             $productName = $product->getPost('product_name');
             $price = $product->getPost('price');
+            $qty = $product->getPost('product_qty');
             // save to db 
             $productModel->insert([
                 'product_name' => $productName,
                 'product_image' => $imagePath,
-                'price' => $price
+                'price' => $price,
+                'product_qty' => $qty
             ]);
             return response()->setJSON([
                 'status' => true,
@@ -102,11 +104,11 @@ class ProductServices
             $updateData = [
                 'product_name' => $product->getPost('product_name'),
                 'product_image' => $imagePath,
-                'price' => $product->getPost('price')
+                'price' => $product->getPost('price'),
+                'product_qty' => $product->getPost('quantity')
             ];
 
             // UPDATE
-            // ✅ CHANGE 4
             $productModel->update($id, $updateData);
 
             return response()->setJSON([
