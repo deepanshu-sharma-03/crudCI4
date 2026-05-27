@@ -140,7 +140,7 @@
                 🛍 Products
             </a>
 
-            <button id="ordersBtn" class="menu-item">
+            <button id="ordersBtn" class="menu-item" onclick="orderSection()">
                 🛒 Orders
             </button>
 
@@ -303,18 +303,11 @@
             document.getElementById('editBox').style.display = "none";
             document.getElementById('dashboard').style.display = "block";
         }
-        document.getElementById("ordersBtn").addEventListener("click", function() {
-            $.ajax({
-                url: "/orders",
-                type: "GET",
-                success: function(response) {
-                    window.location.href = "/orders";
-                },
-                error: function() {
-                    alert("Failed to load orders");
-                }
-            })
-        })
+        // order Section
+        function orderSection() {
+            window.location.href =
+                base + "user/orders";
+        }
     </script>
 </body>
 

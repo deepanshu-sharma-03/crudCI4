@@ -14,6 +14,8 @@ class OrderModel extends Model
         'sub_total',
         'grand_total',
         'payment_mode',
-        'status'
+        'status',
+        'gateway',
+        'payment_id'
     ];
 }

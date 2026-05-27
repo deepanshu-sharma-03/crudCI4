@@ -94,6 +94,7 @@
     </style>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 
 </head>
@@ -121,21 +122,21 @@
                             <div class="col-md-6 mb-3">
                                 <input
                                     type="text"
-                                    class="form-control"
+                                    class="form-control name"
                                     placeholder="Full Name" required>
                             </div>
 
                             <div class="col-md-6 mb-3">
                                 <input
                                     type="email"
-                                    class="form-control"
+                                    class="form-control email"
                                     placeholder="Email Address" required>
                             </div>
 
                             <div class="col-md-6 mb-3">
                                 <input
                                     type="text"
-                                    class="form-control"
+                                    class="form-control number"
                                     placeholder="Phone Number" required>
                             </div>
 
@@ -225,9 +226,9 @@
                                         </h6>
 
                                         <small>
-                                            ₹<?= esc($item['price']) ?>
+                                            ₹<?= ($item['price']) ?>
                                             ×
-                                            <?= esc($item['quantity']) ?>
+                                            <?= ($item['quantity']) ?>
                                         </small>
 
                                     </div>
@@ -270,7 +271,7 @@
                         </span>
                     </div>
 
-                    <button class="place-btn mt-4" onclick=placeOrder()>
+                    <button type="button" class="place-btn mt-4" onclick=placeOrder()>
                         PLACE ORDER
                     </button>
 
@@ -340,8 +341,8 @@
                             icon: "success",
                             draggable: true
                         }).then(() => {
-                            // window.location.href =
-                            //     "<?= base_url('user/view-products') ?>";
+                            window.location.href =
+                                "<?= base_url('user/view-products') ?>";
                         });
 
                     },
@@ -364,10 +365,109 @@
                     success: function(response) {
                         console.log(response);
                         // gateway logic
-                        alert("Redirecting to Payment");
+                        if (response.status) {
+                            let name = document.querySelector('.name').value;
+                            let number = document.querySelector('.number').value;
+                            let email = document.querySelector('.email').value;
+                            var options = {
+                                key: "<?= env('RAZORPAY_KEY_ID') ?>",
+                                amount: response.amount,
+                                currency: 'INR',
+                                name: 'My Project',
+                                description: 'Order Payment',
+                                order_id: response.order_id,
+                                prefill: {
+                                    name: name,
+                                    email: email,
+                                    contact: number
+                                },
+                                retry: {
+
+                                    enabled: false
+
+                                },
+                                handler: function(payment) {
+                                    Swal.fire({
+                                        title: "Order Placed!",
+                                        icon: "success",
+                                        draggable: true
+                                    }).then(() => {
+                                        $.ajax({
+                                            url: "<?= base_url('/checkout/successPayment') ?>",
+                                            type: 'POST',
+                                            data: {
+                                                'payment-data': payment,
+                                                'payload': payload
+                                            },
+                                            success: function(response) {
+                                                if (response.status) {
+                                                    window.location.href =
+                                                        "<?= base_url('user/view-products') ?>";
+                                                }
+                                            }
+                                        })
+
+                                    });
+                                    console.log(payment);
+                                },
+                                modal: {
+                                    ondismiss: function() {
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Payment Cancelled',
+                                            timer: 1500,
+                                            showConfirmButton: false
+                                        }).then(() => {
+                                            window.location.href = "<?= base_url('/cart') ?>";
+                                        });
+
+
+                                    }
+                                }
+                            };
+                            var rzp = new Razorpay(options);
+                            rzp.on('payment.failed', function(response) {
+
+                                console.log(response.error);
+                                let paymentId = response.error.metadata.payment_id;
+                                let orderId = response.error.metadata.order_id;
+                                console.log("payment id : ", paymentId);
+                                console.log("Order id :", orderId);
+
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Payment Failed',
+                                    timer: 1500,
+                                    text: response.error.description,
+
+                                }).then(() => {
+                                    $.ajax({
+                                        url: "<?= base_url('/checkout/failedPayment') ?>",
+                                        type: 'POST',
+                                        data: {
+                                            'payment-data': response.error,
+                                            'payload': payload
+                                        },
+                                        success: function(response) {
+                                            if (response.status) {
+                                                window.location.href =
+                                                    "<?= base_url('/cart') ?>";
+                                            }
+                                        }
+                                    })
+                                });
+
+                            });
+                            rzp.open();
+                        }
                     },
-                    error: function() {
-                        alert("Payment Failed");
+                    error: function(xhr) {
+                        console.log(xhr.responseText);
+                        Swal.fire({
+                            icon: "error",
+                            title: "Oops...",
+                            text: "something went wrong",
+                        });
                     }
                 });
             }

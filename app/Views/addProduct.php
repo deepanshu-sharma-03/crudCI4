@@ -107,7 +107,7 @@
 
                     <input
                         type="number"
-                        name="quantity"
+                        name="product_qty"
                         class="form-control"
                         placeholder="Enter Product Price"
                         required>
@@ -161,9 +161,11 @@
 
                 // PAGE RELOAD STOP
                 e.preventDefault();
-
+                console.log("form submitted");
                 // FORM DATA
                 let formData = new FormData(this);
+
+                console.log(formData);
 
                 $.ajax({
 
@@ -180,7 +182,7 @@
                     success: function(response) {
 
                         if (response.status) {
-
+                            console.log("result recieved");
                             alert(response.message);
 
                             // REDIRECT

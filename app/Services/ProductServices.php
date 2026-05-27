@@ -6,7 +6,7 @@ use App\Models\ProductModel;
 
 class ProductServices
 {
-    public static  function saveProduct($product)
+    public static function saveProduct(object $product)
     {
         try {
             $productModel = new ProductModel();
@@ -29,8 +29,10 @@ class ProductServices
                 'product_name' => $productName,
                 'product_image' => $imagePath,
                 'price' => $price,
-                'product_qty' => $qty
+                'product_qty' => $qty,
+                'status' => 'active'
             ]);
+
             return response()->setJSON([
                 'status' => true,
                 'message' => 'Product added successfully'

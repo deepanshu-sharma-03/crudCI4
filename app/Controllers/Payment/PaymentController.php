@@ -17,4 +17,16 @@ class PaymentController extends BaseController
     {
         return $this->paymentService->placeOrder($this->request);
     }
+    function startPayment()
+    {
+        return $this->paymentService->startPayment($this->request);
+    }
+    function successPayment()
+    {
+        return $this->paymentService->successPayment($this->request);
+    }
+    function failedPayment()
+    {
+        return $this->paymentService->failedPayment($this->request);
+    }
 }
