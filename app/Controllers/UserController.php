@@ -29,4 +29,9 @@ class UserController extends Controller
     {
         return $this->userService->updateProfile($this->request);
     }
+    // UPDATE USER NOTIFICATION
+    public function updateNotificationStatus()
+    {
+        return $this->userService->updateNotificationStatus($this->request);
+    }
 }

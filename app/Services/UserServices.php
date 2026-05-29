@@ -2,20 +2,29 @@
 
 namespace App\Services;
 
+use App\Models\NotificationModel;
 use App\Models\UserModel;
 use Config\Services;
 
 class UserServices extends Services
 {
-    public function registerUser($request)
+    protected UserModel $userModel;
+    protected NotificationModel $nfModel;
+
+    public function __construct()
     {
-        $userModel = new UserModel();
+        $this->userModel = new UserModel();
+        $this->nfModel = new NotificationModel();
+    }
+    public function registerUser(object $request)
+    {
+
         $name = $request->getPost('name');
         $email = $request->getPost('email');
         $mobile = $request->getPost('mobile_number');
         $password = $request->getPost('password');
 
-        $userModel->insert([
+        $this->userModel->insert([
             'name' => $name,
             'email' => $email,
             'password' => $password,
@@ -47,20 +56,25 @@ class UserServices extends Services
     }
 
     // GET USER PROFILE
-    public function  getProfile($request)
+    public function  getProfile(object $request)
     {
         // GET USER ID
         $id = $request->user->id;
 
         // FIND USER
-        $model = new UserModel();
-        $user = $model->find($id);
+        $user = $this->userModel->find($id);
+
+        // FETCH NOTIFICATION
+        $nfData = $this->nfModel->fetchNotifications();
 
         // RETURN USER
-        return response()->setJSON($user);
+        return response()->setJSON([
+            'userData' => $user,
+            'nfData' => $nfData,
+        ]);
     }
     // UPDATE USER  PROFILE
-    function updateProfile($request)
+    function updateProfile(object $request)
     {
         $id = $request->user->id;
         $model = new UserModel();
@@ -74,6 +88,22 @@ class UserServices extends Services
         return response()->setJSON([
             'status' => 'success',
             'message' => 'profile updated succcessfully'
+        ]);
+    }
+
+    // UPDATE NOTIFICATION STATUS
+    function updateNotificationStatus(object $request)
+    {
+        $usernfStatus = $request->getPost('nfstatus');
+        $id = $request->user->id;
+        if ($usernfStatus === 'true') {
+            $usernfStatus = '1';
+        } else {
+            $usernfStatus = '0';
+        }
+        $result = $this->userModel->updateNotificationStatus($usernfStatus, $id);
+        return response()->setJSON([
+            'result' => $result
         ]);
     }
 }

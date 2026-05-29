@@ -41,11 +41,22 @@ $routes->group('', ['filter' => 'jwt'], function ($routes) {
         $routes->post('update-product/(:num)', 'Products\ProductController::updateProduct/$1');
         $routes->get('delete-product/(:num)', 'Products\ProductController::deleteProduct/$1');
         $routes->post('product/toggle-status', 'Products\ProductController::toggleStatus');
+        // notifications
+
+        $routes->get('notification', 'Notification\NotificationController::nfPage');
+        $routes->post('notification/update-status', 'Notification\NotificationController::update');
+        $routes->post('notification/create-notification', 'Notification\NotificationController::save');
     });
     $routes->group('', ['filter' => ['role:user']], function ($routes) {
         $routes->get('user', 'UserController::user');
         $routes->get('get-user-profile', 'UserController::getProfile');
         $routes->post('update-user-profile', 'UserController::updateProfile');
+
+        // NOTIFICATION
+        $routes->post('/user/notification-status', 'UserController::updateNotificationStatus');
+
+
+
         $routes->post('/add-cart', 'Cart\CartController::addToCart');
         $routes->get('/cart', 'Cart\CartController::showCart');
         $routes->post('/update-cart', 'Cart\CartController::updateCart');

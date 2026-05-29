@@ -7,6 +7,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
     <style>
         body {
@@ -113,6 +115,67 @@
         .table td {
             padding: 16px !important;
         }
+
+        /* NOTIFICATION BAR */
+
+        #notificationStrip {
+            background: linear-gradient(90deg, #2563eb, #1d4ed8);
+            color: #fff;
+
+            display: flex;
+            align-items: center;
+            gap: 18px;
+
+            padding: 14px 20px;
+            border-radius: 14px;
+
+            margin-bottom: 25px;
+
+            box-shadow:
+                0 8px 20px rgba(37, 99, 235, .18);
+
+            overflow: hidden;
+        }
+
+        .notify-icon {
+            font-size: 16px;
+            font-weight: 700;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .ticker-wrap {
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .ticker {
+            display: inline-block;
+            white-space: nowrap;
+            animation: tickerMove 22s linear infinite;
+        }
+
+        .notification-item {
+            display: inline-block;
+            margin-right: 90px;
+            font-size: 15px;
+        }
+
+        .notification-title {
+            color: #ffd54f;
+            font-weight: 700;
+        }
+
+        @keyframes tickerMove {
+
+            0% {
+                transform: translateX(100%);
+            }
+
+            100% {
+                transform: translateX(-100%);
+            }
+        }
     </style>
 </head>
 
@@ -147,7 +210,19 @@
             <a href="#" onclick="openEditForm()" class="menu-item">
                 ✏ Edit Profile
             </a>
+            <div class="form-check form-switch text-white mt-3">
 
+                <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="notificationToggle"
+                    onchange="toggleNotification()">
+
+                <label class="form-check-label">
+                    Show Notifications
+                </label>
+
+            </div>
         </div>
 
         <div class="logout-box">
@@ -165,6 +240,22 @@
     </div>
 
     <div class="main-content">
+
+        <div id="notificationStrip">
+
+            <span class="notify-icon">
+                🔔 Notifications
+            </span>
+
+            <div class="ticker-wrap">
+
+                <div id="notificationContent" class="ticker">
+
+                </div>
+
+            </div>
+
+        </div>
 
         <div class="card shadow card-box" id="dashboard">
 
@@ -192,47 +283,48 @@
             </table>
 
         </div>
+    </div>
 
-        <div
-            id="editBox"
-            style="display:none;"
-            class="card shadow p-4 mt-4">
+    <div
+        id="editBox"
+        style="display:none;"
+        class="card shadow p-4 mt-4">
 
-            <h3>Edit Profile</h3>
+        <h3>Edit Profile</h3>
 
-            <input
-                type="text"
-                id="edit_name"
-                class="form-control mb-3"
-                placeholder="Name">
+        <input
+            type="text"
+            id="edit_name"
+            class="form-control mb-3"
+            placeholder="Name">
 
-            <input
-                type="email"
-                id="edit_email"
-                class="form-control mb-3"
-                placeholder="Email">
+        <input
+            type="email"
+            id="edit_email"
+            class="form-control mb-3"
+            placeholder="Email">
 
-            <input
-                type="text"
-                id="edit_mobile"
-                class="form-control mb-3"
-                placeholder="Mobile">
+        <input
+            type="text"
+            id="edit_mobile"
+            class="form-control mb-3"
+            placeholder="Mobile">
 
-            <input
-                type="password"
-                id="edit_password"
-                class="form-control mb-3"
-                placeholder="Password">
+        <input
+            type="password"
+            id="edit_password"
+            class="form-control mb-3"
+            placeholder="Password">
 
-            <button
-                class="btn btn-success"
-                onclick="updateProfile()">
+        <button
+            class="btn btn-success"
+            onclick="updateProfile()">
 
-                Save
+            Save
 
-            </button>
+        </button>
 
-        </div>
+    </div>
 
     </div>
     <script>
@@ -248,16 +340,48 @@
                 )
                 .then(res => res.json())
                 .then(user => {
-                    document.getElementById("user_id").innerHTML = user.id;
-                    document.getElementById("user_name").innerHTML = user.name;
-                    document.getElementById("user_email").innerHTML = user.email;
-                    document.getElementById("user_mobile_number").innerHTML = user.mobile_number;
+                    document.getElementById("user_id").innerHTML = user.userData.id;
+                    document.getElementById("user_name").innerHTML = user.userData.name;
+                    document.getElementById("user_email").innerHTML = user.userData.email;
+                    document.getElementById("user_mobile_number").innerHTML = user.userData.mobile_number;
 
                     // EDIT FORM
-                    document.getElementById("edit_name").value = user.name;
-                    document.getElementById("edit_email").value = user.email;
-                    document.getElementById("edit_mobile").value = user.mobile_number;
+                    document.getElementById("edit_name").value = user.userData.name;
+                    document.getElementById("edit_email").value = user.userData.email;
+                    document.getElementById("edit_mobile").value = user.userData.mobile_number;
                     document.getElementById("edit_password").value = "";
+                    // SET TOGGLE STATUS
+                    let toggle = document.getElementById("notificationToggle");
+                    let html = "";
+                    user.nfData.forEach(n => {
+                        html += `
+                <span class="notification-item">
+                    <span class="notification-title">
+                        ${n.title}
+                    </span>
+                    — ${n.description}
+                </span>
+            `;
+                    });
+                    document.getElementById("notificationContent").innerHTML = html;
+
+
+                    if (user.userData.nf_status == 1) {
+
+                        toggle.checked = true;
+
+                        document.getElementById(
+                            "notificationStrip"
+                        ).style.display = "flex";
+
+                    } else {
+
+                        toggle.checked = false;
+
+                        document.getElementById(
+                            "notificationStrip"
+                        ).style.display = "none";
+                    }
                 });
         }
 
@@ -272,7 +396,6 @@
             let email = document.getElementById("edit_email").value;
             let mobile = document.getElementById("edit_mobile").value;
             let password = document.getElementById("edit_password").value;
-            console.log(id);
             fetch("<?= base_url('update-user-profile') ?>", {
                     method: "POST",
                     credentials: "include",
@@ -307,6 +430,39 @@
         function orderSection() {
             window.location.href =
                 base + "user/orders";
+        }
+
+        function toggleNotification() {
+            let toggle = document.getElementById("notificationToggle");
+            let box = document.getElementById("notificationStrip");
+            console.log(toggle.checked);
+            $.ajax({
+                url: "<?= base_url('/user/notification-status') ?>",
+                type: "POST",
+                dataType: "json",
+                data: {
+                    'nfstatus': toggle.checked,
+                },
+                success: function(response) {
+                    Swal.fire({
+                        title: "Notification Status Updated!!",
+                        icon: "success",
+                        draggable: true
+                    });
+                },
+                error: function(err) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "something went wrong",
+                    });
+                }
+            });
+            if (toggle.checked) {
+                box.style.display = "flex";
+            } else {
+                box.style.display = "none";
+            }
         }
     </script>
 </body>

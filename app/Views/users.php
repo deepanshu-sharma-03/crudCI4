@@ -136,6 +136,9 @@
                 <a href="#">
                     👥 Users
                 </a>
+                <a href='/notification'>
+                    Notifications
+                </a>
 
             </div>
 
