@@ -65,7 +65,7 @@ class UserServices extends Services
         $user = $this->userModel->find($id);
 
         // FETCH NOTIFICATION
-        $nfData = $this->nfModel->fetchNotifications();
+        $nfData = $this->nfModel->fetchNotifications($id);
 
         // RETURN USER
         return response()->setJSON([

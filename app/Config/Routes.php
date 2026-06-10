@@ -54,7 +54,7 @@ $routes->group('', ['filter' => 'jwt'], function ($routes) {
 
         // NOTIFICATION
         $routes->post('/user/notification-status', 'UserController::updateNotificationStatus');
-
+        $routes->post('user/notification/remove', 'Notification\NotificationController::removeNotification');
 
 
         $routes->post('/add-cart', 'Cart\CartController::addToCart');

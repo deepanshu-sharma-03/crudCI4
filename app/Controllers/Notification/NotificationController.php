@@ -24,4 +24,8 @@ class NotificationController extends BaseController
     {
         return $this->notificationService->save($this->request);
     }
+    function removeNotification()
+    {
+        return $this->notificationService->removeNotification($this->request);
+    }
 }

@@ -3,27 +3,30 @@
 namespace App\Services\Notifications;
 
 use App\Models\NotificationModel;
+use App\Models\UserModel;
+use App\Models\UserNfModel\UserNfModel;
 
 class NotificationServices
 {
     protected  NotificationModel $nModel;
+    protected UserModel $userModel;
+    protected UserNfModel $userNfModel;
+
     public function __construct()
     {
         $this->nModel = new NotificationModel();
+        $this->userModel = new UserModel();
+        $this->userNfModel = new UserNfModel();
     }
     public function nfPage()
     {
         $result = $this->nModel->getNotification();
         return view('Notification/notification', ['notification' => $result]);
     }
-    public function update(object $request)
+    public function update(object $request): object
     {
-        // print_r($request);
         $status = (int)$request->getPost('status');
         $id = (int)$request->getPost('id');
-
-        // $status = ($status == 1) ? 1 : 0;
-
 
         $result = $this->nModel->updateStatus($id, $status);
 
@@ -33,7 +36,7 @@ class NotificationServices
             'status' => $status
         ]);
     }
-    function save(object $request)
+    public function save(object $request): object
     {
         $title = $request->getPost('title');
         $description = $request->getPost('description');
@@ -44,9 +47,36 @@ class NotificationServices
             $status = '0';
         }
         $result = $this->nModel->saveNotification($title, $description, $status);
-        if (!$result) {
-            return redirect()->back()->with('error', 'Notification save failed');
+
+
+        $users = $this->userModel->getUsersId();
+
+        $batchsize = 100;
+        $values = [];
+
+
+        foreach ($users as $user) {
+            $values[] = [
+                'user_id' => $user['id'],
+                'notifications_id' => $result,
+            ];
+        }
+
+        // Save all notifications in batches
+        for ($i = 0; $i < count($values); $i += $batchsize) {
+            $batch = array_slice($values, $i, $batchsize);
+            $this->userNfModel->saveNotifications($batch);
         }
         return redirect()->to('/notification')->with('success', 'Saved Successfully');
+    }
+    // remove notification from user side
+    public function removeNotification(object $request): object
+    {
+        $notificationId = (int)$request->getPost('notificationId');
+        $userId = $request->user->id;
+        $result = $this->userNfModel->removeNotification($userId, $notificationId);
+        return response()->setJSON([
+            'result' => $result
+        ]);
     }
 }

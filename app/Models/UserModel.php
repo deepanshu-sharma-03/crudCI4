@@ -15,4 +15,10 @@ class UserModel extends Model
         $sql = "UPDATE users SET nf_status = '{$status}' WHERE id = '{$id}'";
         return $this->db->query($sql);
     }
+    // RETURNING USERS ID 
+    public function getUsersId(): array
+    {
+        $sql = "SELECT id FROM users";
+        return $this->db->query($sql)->getResultArray();
+    }
 }

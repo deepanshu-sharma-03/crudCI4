@@ -7,15 +7,15 @@ use App\Models\CartModel;
 
 class CartServices
 {
-    protected $cartModel;
-    protected $productModel;
+    protected CartModel $cartModel;
+    protected ProductModel $productModel;
     public function __construct()
     {
         $this->cartModel = new CartModel();
         $this->productModel = new ProductModel();
     }
 
-    public  function addToCart($request)
+    public  function addToCart(object $request): object
     {
         $data = $request->getJSON(true);
         $userId = $request->user->id;
@@ -44,7 +44,7 @@ class CartServices
             'message' => 'already in  cart'
         ]);
     }
-    function showCart($request)
+    function showCart(object $request): string
     {
         $userId = $request->user->id;
         $data = $this->cartModel->select('cart.id,cart.quantity,products.product_name,products.product_image,products.price,products.product_qty')
@@ -53,7 +53,7 @@ class CartServices
     }
 
     //DELETE FROM CART
-    function deleteFromCart($request)
+    function deleteFromCart(object $request): object
     {
         $id = $request->getPost('id');
         $data = $this->cartModel->delete($id);
@@ -63,7 +63,7 @@ class CartServices
     }
 
     // UPDATE THE QUANTITY OF PRODUCT
-    function UpdateCart($request)
+    function UpdateCart(object $request): object
     {
         $cartId = $request->getPost('id');
         $quantity = $request->getPost('quantity');
